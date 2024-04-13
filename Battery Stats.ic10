@@ -1,0 +1,9 @@
+define hBattery -1388288459
+alias dRatioLed d0
+alias rRatio r16
+
+start:
+lb rRatio hBattery Ratio 0
+mul rRatio rRatio 100
+s dRatioLed Setting rRatio
+j start
