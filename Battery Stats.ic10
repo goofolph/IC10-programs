@@ -1,6 +1,6 @@
-define hBattery -1388288459
 alias dRatioLed d0
 alias rRatio r16
+define hBattery -1388288459
 
 start:
 lb rRatio hBattery Ratio 0
