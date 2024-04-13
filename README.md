@@ -15,9 +15,11 @@ The Daylight Sensor has it's data connector facing north 0.
 Solar panels have their data connector facing west 270.
 
 Will be updating solar panel orientation to use less cable.
+Might also update to pre-aim solar panels at sunrise after complete sunset incase of full battery drain before sunrise.
 
 ## Fire Door
 
 Set of double doors that function as an airlock without airvents. Won't stop air
 leaks or mixing, but function as emergency doors that won't explosively decompress.
 
+## Airlock
