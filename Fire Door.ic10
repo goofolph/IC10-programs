@@ -1,0 +1,37 @@
+alias dDoorInner d0
+alias dDoorOuter d1
+
+s dDoorInner Mode 1
+s dDoorOuter Mode 1
+
+openOuter:
+s dDoorInner Open 0
+s dDoorInner Setting 0
+waitSealInner:
+yield
+l r0 dDoorInner Idle
+bne r0 1 waitSealInner
+s dDoorOuter Open 1
+s dDoorOuter Setting 1
+waitOuter:
+yield
+l r0 dDoorOuter Setting
+l r1 dDoorInner Setting
+bne r0 r1 waitOuter
+
+openInner:
+s dDoorOuter Open 0
+s dDoorOuter Setting 0
+waitSealOuter:
+yield
+l r0 dDoorOuter Idle
+bne r0 1 waitSealOuter
+s dDoorInner Open 1
+s dDoorInner Setting 1
+waitInner:
+yield
+l r0 dDoorOuter Setting
+l r1 dDoorInner Setting
+bne r0 r1 waitInner
+
+j openOuter
