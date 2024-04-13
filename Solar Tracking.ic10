@@ -1,24 +1,25 @@
-alias DaylightSensor d0
-alias HorizontalLed d1
-alias VerticalLed d2
-alias ChargeLed d3
-alias EffLed d4
-alias Horz r16
-alias Vert r15
-alias Char r14
-alias Rati r13
+alias dDaylightSensor d0
+alias dHorizontalLed d1
+alias dVerticalLed d2
+alias dChargeLed d3
+alias dEffLed d4
+alias rHorzontal r16
+alias rVertical r15
+alias rCharge r14
+alias rRatio r13
 define SolarPanels -1545574413
 start:
-l Horz DaylightSensor Horizontal
-l Vert DaylightSensor Vertical
-lb Char SolarPanels Charge 1
-lb Rati SolarPanels Ratio 0
-add Horz Horz 0
-add Vert Vert 90
-s HorizontalLed Setting Horz
-s VerticalLed Setting Vert
-s ChargeLed Setting Char
-s EffLed Setting Rati
-sb SolarPanels Horizontal Horz
-sb SolarPanels Vertical Vert
+l rHorzontal dDaylightSensor Horizontal
+l rVertical dDaylightSensor Vertical
+lb rCharge SolarPanels Charge 1
+lb rRatio SolarPanels Ratio 0
+mul rRatio rRatio 100
+add rHorzontal rHorzontal 0
+add rVertical rVertical 90
+s dHorizontalLed Setting rHorzontal
+s dVerticalLed Setting rVertical
+s dChargeLed Setting rCharge
+s dEffLed Setting rRatio
+sb SolarPanels Horizontal rHorzontal
+sb SolarPanels Vertical rVertical
 j start
