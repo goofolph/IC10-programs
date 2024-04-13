@@ -1,0 +1,24 @@
+alias DaylightSensor d0
+alias HorizontalLed d1
+alias VerticalLed d2
+alias ChargeLed d3
+alias EffLed d4
+alias Horz r16
+alias Vert r15
+alias Char r14
+alias Rati r13
+define SolarPanels -1545574413
+start:
+l Horz DaylightSensor Horizontal
+l Vert DaylightSensor Vertical
+lb Char SolarPanels Charge 1
+lb Rati SolarPanels Ratio 0
+add Horz Horz 0
+add Vert Vert 90
+s HorizontalLed Setting Horz
+s VerticalLed Setting Vert
+s ChargeLed Setting Char
+s EffLed Setting Rati
+sb SolarPanels Horizontal Horz
+sb SolarPanels Vertical Vert
+j start
