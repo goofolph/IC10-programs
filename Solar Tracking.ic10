@@ -14,7 +14,7 @@ l rVertical dDaylightSensor Vertical
 lb rCharge SolarPanels Charge 1
 lb rRatio SolarPanels Ratio 0
 mul rRatio rRatio 100
-add rHorzontal rHorzontal 0
+add rHorzontal rHorzontal -90
 add rVertical rVertical 90
 s dHorizontalLed Setting rHorzontal
 s dVerticalLed Setting rVertical
@@ -22,4 +22,8 @@ s dChargeLed Setting rCharge
 s dEffLed Setting rRatio
 sb SolarPanels Horizontal rHorzontal
 sb SolarPanels Vertical rVertical
+yield
+yield
+yield
+yield
 j start

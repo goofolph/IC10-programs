@@ -10,12 +10,8 @@ Might update later to support mixed battery types.
 
 Tracks solar panels to Verticle and Horizontal positioning of the sun.
 Setup:
-Link items to d# ports as listed.
-The Daylight Sensor has it's data connector facing north 0.
-Solar panels have their data connector facing west 270.
-
-Will be updating solar panel orientation to use less cable.
-Might also update to pre-aim solar panels at sunrise after complete sunset incase of full battery drain before sunrise.
+- Link items to d# ports as listed.
+- The daylight sensor and solar panels should all have the data connector facing north (0 degrees).
 
 ## Fire Door
 
