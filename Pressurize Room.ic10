@@ -1,0 +1,16 @@
+alias sensor d1
+alias vent d0
+
+s vent PressureInternal 100
+
+start:
+l r0 sensor Pressure
+bgt r0 101 ventoff
+s vent Mode 1
+s vent On 1
+j end
+ventoff:
+s vent On 0
+end:
+yield
+j start
