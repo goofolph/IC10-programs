@@ -1,0 +1,83 @@
+alias dDoorInner d0
+alias dDoorOuter d1
+alias dVentInner d2
+alias dVentOuter d3
+alias dSensor d4
+
+# pre flight
+s dDoorInner Mode 1
+s dDoorOuter Mode 1
+s dVentInner On 0
+s dVentOuter On 0
+
+# State 1: Open Outer, close inner
+openOuter:
+s dDoorInner Open 0
+s dDoorInner Setting 0
+waitOpenOuterSeal:
+yield
+l r0 dDoorInner Idle
+bne r0 1 waitOpenOuterSeal
+s dDoorOuter Open 1
+s dDoorOuter Setting 1
+waitOuter: # waits until user activates a door
+yield
+l r0 dDoorOuter Setting
+l r1 dDoorInner Setting
+bne r0 r1 waitOuter
+
+# State 2: Vent Outer, pull vacuum
+s dDoorOuter Open 0
+s dDoorOuter Setting 0
+waitVentOuterSeal:
+yield
+l r0 dDoorOuter Idle
+bne r0 1 waitVentOuterSeal
+s dVentOuter Mode 1
+s dVentOuter On 1
+s dVentInner On 0
+
+waitVentOuter:
+yield
+l r0 dSensor Pressure
+bgtz r0 waitVentOuter
+s dVentInner On 0
+s dVentOuter On 0
+
+# State 3: Pressurize Inner, pull air from inner
+
+# State 4: Open Inner, close outer
+s dDoorOuter Open 0
+s dDoorOuter Setting 0
+waitOpenInnerSeal:
+yield
+l r0 dDoorOuter Idle
+bne r0 1 waitOpenInnerSeal
+s dDoorInner Open 1
+s dDoorInner Setting 1
+waitInner:
+yield
+l r0 dDoorOuter Setting
+l r1 dDoorInner Setting
+bne r0 r1 waitInner
+
+# State 5: Vent Inner, pull vacuum
+s dDoorInner Open 0
+s dDoorInner Setting 0
+waitVentInnerSeal:
+yield
+l r0 dDoorInner Idle
+bne r0 1 waitVentInnerSeal
+s dVentInner Mode 1
+s dVentInner On 1
+s dVentOuter On 0
+waitVentInner:
+yield
+l r0 dSensor Pressure
+bgtz r0 waitVentInner
+s dVentInner On 0
+s dVentOuter On 0
+
+# State 6: Pressurize Outer, pull air from outer
+
+j openOuter
