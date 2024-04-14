@@ -21,6 +21,13 @@ leaks or mixing, but function as emergency doors that won't explosively decompre
 
 ## Airlock
 
+Cycles doors and pulls a vauume to keep interior and exterior gasses from mixing.
+
+Setup:
+- Link items to d# ports as listed
+
+Might have fixed values for inside and outside pressure, or sensors to read to auto equalize from tanks.
+
 ## Pressureize Room
 
 Fills a room with gas. It is much faster if the Active vent is on the outside of the room set to inward.
