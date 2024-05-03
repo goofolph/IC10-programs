@@ -28,6 +28,16 @@ Setup:
 
 Might have fixed values for inside and outside pressure, or sensors to read to auto equalize from tanks.
 
+### TODO
+
+- [ ] Detect door state to prevent cycling airlock on restart / export causing gas leaks or loss
+- [ ] Add emercency override to skip re-pressurizatioin
+- [ ] Add option for internal and external sensors to match pressure inplace of defines
+- [ ] Add visual progress via diode
+- [ ] Add variant for single vent airlock, for use without external atmosphere
+- [ ] Add option for dual airlocks, when one cycles also cycle the other so one airlock is always open to the exterior and the other to the interior preventing waiting on a cycle in multiplayer
+- [ ] Add pressure differencial so airlock can open if pressure within 10% of goal to increase speed without too much explosive decompression
+
 ## Pressureize Room
 
 Fills a room with gas. It is much faster if the Active vent is on the outside of the room set to inward.
