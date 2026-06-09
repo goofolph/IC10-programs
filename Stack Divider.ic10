@@ -1,0 +1,44 @@
+# d0: Dial (input number of stacks to divide into)
+# d1: Stacker (the machine performing the split)
+
+alias dDial d0
+alias dStacker d1
+
+alias rDialSetting r15
+alias rQty r14
+alias rSplitSize r13
+
+s dStacker Mode 1
+s dStacker On 1
+s dStacker Activate 0
+s dDial Mode 10
+
+main:
+  yield
+  ls r0 dStacker 2 Occupied
+  beqz r0 main
+  ls rQty dStacker 2 Quantity
+  l rDialSetting dDial Setting
+  max rDialSetting rDialSetting 1
+  div rSplitSize rQty rDialSetting
+  ceil rSplitSize rSplitSize
+  s dStacker Setting rSplitSize
+  j splitstack
+
+splitstack:
+  yield
+  ls r0 dStacker 2 Quantity
+  beqz r0 main
+  # if quantity is less than stack size, activate and deactivate
+  # else output 1 the -1
+  blt r0 rSplitSize activate
+  output:
+  s dStacker Output 1
+  yield
+  s dStacker Output -1
+  j splitstack
+  activate:
+  s dStacker Activate 1
+  yield
+  s dStacker Activate 0
+  j main
