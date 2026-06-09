@@ -1,0 +1,24 @@
+alias dPrinter d0
+alias dStacker d1
+
+alias rCounter r10
+
+start:
+yield
+l r0 dPrinter On
+s dStacker On r0
+
+l r0 dPrinter Activate
+
+bnez r0 printerActive
+l rCounter dStacker Setting
+s dPrinter ClearMemory 1
+j start
+
+printerActive:
+l r0 dPrinter ExportCount
+s db Setting r0
+slt r0 r0 rCounter
+s dPrinter Activate r0
+
+j start

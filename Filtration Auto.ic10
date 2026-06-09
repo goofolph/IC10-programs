@@ -1,0 +1,74 @@
+# inspired by Filtration Pilot (OnBoard) by Sharidan https://steamcommunity.com/sharedfiles/filedetails/?id=2978782048
+# adds some adjustments for more readable filter checks, and tweaked detections
+define MAXPRESSURE 30000
+define ALARMPERCENT 5
+define TRIGGERMOLES 50
+define COOLTEMP 293
+alias Diode d0
+alias PumpValve d1
+define ALARMLIGHT HASH("StructureFlashingLight")
+alias FilterUnit db
+# r0-r2 used for temps/functions
+alias slotHash1 r8
+alias slotHash2 r9
+alias moles r10
+alias slotMoles1 r11
+alias slotMoles2 r12
+alias percent r13
+alias slotPercent1 r14
+alias slotPercent2 r15
+mainLoop:
+jal checkFilter
+move slotHash1 slotHash2
+move slotMoles1 slotMoles2
+move slotPercent1 slotPercent2
+move r0 1
+jal checkFiter
+# TODO: if either slot percent <= 5% then start alarm
+# TODO: if either slot percent = 0% then idle
+# TODO: if slot1 + slot2 moles > TRIGGERMOLES then active.
+# TODO: if input temp > COOLTEMP then enable pump. use brdns to make opitonal
+# TODO set diode. use brdns to make opitonal
+j mainLoop:
+checkFilter: # Get Current Filter in slot r0
+move slotHash2 0
+move slotMoles2 0
+move slotPercent2 0
+ls slotHash1 FilterUnit r0 OccupantHash
+l r1 FilterUnit RatioVolatilesInput
+beg slotHash1 HASH("ItemGasFilterVolatiles") filterFound
+beg slotHash1 HASH("ItemGasFilterVolatilesM") filterFound
+beg slotHash1 HASH("ItemGasFilterVolatilesL") filterFound
+beg slotHash1 HASH("ItemGasFilterVolatilesInfinite") filterFound
+l r1 FilterUnit RatioPollutantInput
+beg slotHash1 HASH("ItemGasFilterPollutant") filterFound
+beg slotHash1 HASH("ItemGasFilterPollutantM") filterFound
+beg slotHash1 HASH("ItemGasFilterPollutantL") filterFound
+beg slotHash1 HASH("ItemGasFilterPollutantInfinite") filterFound
+l r1 FilterUnit RatioOxygenInput
+beg slotHash1 HASH("ItemGasFilterOxygen") filterFound
+beg slotHash1 HASH("ItemGasFilterVOxygenM") filterFound
+beg slotHash1 HASH("ItemGasFilterOxygenL") filterFound
+beg slotHash1 HASH("ItemGasFilterOxygenInfinite") filterFound
+l r1 FilterUnit RatioNitrousOxideInput
+beg slotHash1 HASH("ItemGasFilterVolatiles") filterFound
+beg slotHash1 HASH("ItemGasFilterVolatilesM") filterFound
+beg slotHash1 HASH("ItemGasFilterVolatilesL") filterFound
+beg slotHash1 HASH("ItemGasFilterVolatilesInfinite") filterFound
+l r1 FilterUnit RatioNitrogenInput
+beg slotHash1 HASH("ItemGasFilterNitrogen") filterFound
+beg slotHash1 HASH("ItemGasFilterNitrogenM") filterFound
+beg slotHash1 HASH("ItemGasFilterNitrogenL") filterFound
+beg slotHash1 HASH("ItemGasFilterNitrogenInfinite") filterFound
+l r1 FilterUnit RatioCarbonDioxideInput
+beg slotHash1 HASH("ItemGasFilterCarbonDioxide") filterFound
+beg slotHash1 HASH("ItemGasFilterCarbonDioxideM") filterFound
+beg slotHash1 HASH("ItemGasFilterCarbonDioxideL") filterFound
+beg slotHash1 HASH("ItemGasFilterCarbonDioxideInfinite") filterFound
+move slotHash1 0 # error/trap
+j ra # return 0 on error
+filterFound:
+l r2 FilterUnit TotalMolesInput
+mul slotMoles2 r2 r1 # get filtered gas moles with total * ratio
+ls slotPercent2 FilterUnit r0 Quantity
+j ra # return
