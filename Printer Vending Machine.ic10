@@ -1,0 +1,88 @@
+alias printer d0
+alias stacker d1
+alias sorter d2
+alias vending d3
+
+alias counter r10
+alias ingot r11
+alias wait r9
+
+setup:
+move ingot 0
+move wait 0
+s sorter Mode 2
+
+start:
+s db Setting ingot
+
+l r0 printer Activate
+brnez r0 3
+l counter stacker Setting
+s printer ClearMemory 1
+breqz r0 4
+l r0 printer ExportCount
+slt r0 r0 counter
+s printer Activate r0
+
+yield
+ls r0 sorter 0 OccupantHash
+breqz r0 3
+seq r0 r0 ingot
+s sorter Output r0
+yield
+l r0 printer ImportCount
+breqz r0 3
+move ingot 0
+move wait 0
+
+# retry ingot after 60 loops
+breqz ingot 5
+add wait wait 1
+brlt wait 60 3
+move wait 0
+move ingot 0
+
+l r0 printer Open
+breqz r0 3
+move ingot 0
+j start
+
+bnez ingot start
+yield
+lr r0 printer Required HASH("Iron")
+select ingot r0 HASH("ItemIronIngot") ingot
+lr r0 printer Required HASH("Copper")
+select ingot r0 HASH("ItemCopperIngot") ingot
+lr r0 printer Required HASH("Gold")
+select ingot r0 HASH("ItemGoldIngot") ingot
+lr r0 printer Required HASH("Lead")
+select ingot r0 HASH("ItemLeadIngot") ingot
+lr r0 printer Required HASH("Nickel")
+select ingot r0 HASH("ItemNickelIngot") ingot
+lr r0 printer Required HASH("Silicon")
+select ingot r0 HASH("ItemSiliconIngot") ingot
+lr r0 printer Required HASH("Silver")
+select ingot r0 HASH("ItemSilverIngot") ingot
+lr r0 printer Required HASH("Constantan")
+select ingot r0 HASH("ItemConstantanIngot") ingot
+lr r0 printer Required HASH("Electrum")
+select ingot r0 HASH("ItemElectrumIngot") ingot
+lr r0 printer Required HASH("Invar")
+select ingot r0 HASH("ItemInvarIngot") ingot
+lr r0 printer Required HASH("Solder")
+select ingot r0 HASH("ItemSolderIngot") ingot
+lr r0 printer Required HASH("Steel")
+select ingot r0 HASH("ItemSteelIngot") ingot
+lr r0 printer Required HASH("Astroloy")
+select ingot r0 HASH("ItemAstroloyIngot") ingot
+lr r0 printer Required HASH("Hastelloy")
+select ingot r0 HASH("ItemHastelloyIngot") ingot
+lr r0 printer Required HASH("Inconel")
+select ingot r0 HASH("ItemInconelIngot") ingot
+lr r0 printer Required HASH("Stellite")
+select ingot r0 HASH("ItemStelliteIngot") ingot
+lr r0 printer Required HASH("Waspaloy")
+select ingot r0 HASH("ItemWaspaloyIngot") ingot
+beqz ingot start
+s vending RequestHash ingot
+j start
