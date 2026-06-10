@@ -6,41 +6,36 @@ alias rCount r13
 
 define THRESHOLD 60
 
-setup:
+move rHash 0
+move rQty 0
+move rCount 0
+
+lMain:
+  yield
+  ls r0 dStacker 2 OccupantHash
+  s db Setting rCount
+  bnez r0 lOccupied
+
+  # Empty state optimization: only reset registers if not already 0
+  beqz rCount lMain
   move rHash 0
   move rQty 0
   move rCount 0
+  j lMain
 
-main:
-  yield
-  ls r0 dStacker 2 OccupantHash
+lOccupied:
   ls r1 dStacker 2 Quantity
-  s db Setting rCount
+  bne r0 rHash lChanged
+  bne r1 rQty lChanged
 
-  bnez r0 lOccupied
-    move rHash 0
-    move rQty 0
-    move rCount 0
-    j main
+  # Idle state (same item type and quantity)
+  add rCount rCount 1
+  ble rCount THRESHOLD lMain
+  s dStacker Activate 1
+  j lMain
 
-  lOccupied:
-    beq r0 rHash lSame
-    move rHash r0
-    move rQty r1
-    move rCount 0
-
-  lSame:
-    bne r1 rQty lUpdated
-    add rCount rCount 1
-    bgt rCount THRESHOLD lEmpty
-    j main
-
-  lEmpty:
-    s dStacker Activate 1
-    j main
-
-  lUpdated:
-    move rQty r1
-    move rCount 0
-
-  j main
+lChanged:
+  move rHash r0
+  move rQty r1
+  move rCount 0
+  j lMain
