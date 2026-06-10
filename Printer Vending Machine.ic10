@@ -5,10 +5,12 @@ alias dVending d3
 
 alias rCounter r10
 alias rIngot r11
+alias rTransit r8
 alias rWait r9
 
 setup:
 move rIngot 0
+move rTransit 0
 move rWait 0
 s dSorter On 1
 s dSorter Mode 2
@@ -27,28 +29,35 @@ s dPrinter Activate r0
 
 yield
 ls r0 dSorter 0 OccupantHash
-breqz r0 3
+breqz r0 5
 seq r0 r0 rIngot
 s dSorter Output r0
+select rTransit r0 rIngot rTransit
+select rIngot r0 0 rIngot
 yield
 l r0 dPrinter ImportCount
-breqz r0 3
+breqz r0 4
 move rIngot 0
+move rTransit 0
 move rWait 0
 
 # retry rIngot after 60 loops
-breqz rIngot 5
+add r0 rIngot rTransit
+breqz r0 6
 add rWait rWait 1
-brlt rWait 60 3
+brlt rWait 60 4
 move rWait 0
 move rIngot 0
+move rTransit 0
 
 l r0 dPrinter Open
-breqz r0 3
+breqz r0 4
 move rIngot 0
+move rTransit 0
 j start
 
-bnez rIngot start
+add r0 rIngot rTransit
+bnez r0 start
 yield
 lr r0 dPrinter Required HASH("Iron")
 select rIngot r0 HASH("ItemIronIngot") rIngot
