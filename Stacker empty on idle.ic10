@@ -2,17 +2,45 @@ alias dStacker d0
 
 alias rHash r15
 alias rQty r14
+alias rCount r13
+
+define THRESHOLD 60
 
 setup:
   move rHash 0
   move rQty 0
+  move rCount 0
 
 main:
   yield
-  ls r0 dStacker 2 Quantity
-  s db Setting r0
-  yield
-  ls r1 dStacker 2 OccupantHash
-  s db Setting r1
-  yield
+  ls r0 dStacker 2 OccupantHash
+  ls r1 dStacker 2 Quantity
+  s db Setting rCount
+
+  bnez r0 lOccupied
+    move rHash 0
+    move rQty 0
+    move rCount 0
+    j main
+
+  lOccupied:
+    beq r0 rHash lSame
+    move rHash r0
+    move rQty r1
+    move rCount 0
+
+  lSame:
+    bne r1 rQty lUpdated
+    add rCount rCount 1
+    bgt rCount THRESHOLD lEmpty
+    j main
+
+  lEmpty:
+    s dStacker Activate 1
+    j main
+
+  lUpdated:
+    move rQty r1
+    move rCount 0
+
   j main
