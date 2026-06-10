@@ -1,0 +1,18 @@
+alias dStacker d0
+
+alias rHash r15
+alias rQty r14
+
+setup:
+  move rHash 0
+  move rQty 0
+
+main:
+  yield
+  ls r0 dStacker 2 Quantity
+  s db Setting r0
+  yield
+  ls r1 dStacker 2 OccupantHash
+  s db Setting r1
+  yield
+  j main
