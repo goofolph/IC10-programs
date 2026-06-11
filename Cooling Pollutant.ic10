@@ -1,0 +1,24 @@
+alias dFilter db
+alias dValve d0
+
+define MAXPRESSURE 1000
+
+s dValve Setting MAXPRESSURE
+
+main:
+
+yield
+l r0 dFilter RatioPollutantInput
+l r1 dFilter PressureOutput
+sgtz r2 r0
+slt r3 r1 MAXPRESSURE
+ls r4 dFilter 0 Quantity
+ls r5 dFilter 1 Quantity
+add r4 r4 r5
+sgtz r6 r4
+and r7 r2 r3
+and r7 r7 r6
+s dFilter Mode r7
+s dValve On r7
+
+j main
