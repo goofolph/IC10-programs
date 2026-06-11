@@ -51,10 +51,10 @@ beg slotHash1 HASH("ItemGasFilterVOxygenM") filterFound
 beg slotHash1 HASH("ItemGasFilterOxygenL") filterFound
 beg slotHash1 HASH("ItemGasFilterOxygenInfinite") filterFound
 l r1 FilterUnit RatioNitrousOxideInput
-beg slotHash1 HASH("ItemGasFilterVolatiles") filterFound
-beg slotHash1 HASH("ItemGasFilterVolatilesM") filterFound
-beg slotHash1 HASH("ItemGasFilterVolatilesL") filterFound
-beg slotHash1 HASH("ItemGasFilterVolatilesInfinite") filterFound
+beg slotHash1 HASH("ItemGasFilterNitrousOxide") filterFound
+beg slotHash1 HASH("ItemGasFilterNitrousOxideM") filterFound
+beg slotHash1 HASH("ItemGasFilterNitrousOxideL") filterFound
+beg slotHash1 HASH("ItemGasFilterNitrousOxideInfinite") filterFound
 l r1 FilterUnit RatioNitrogenInput
 beg slotHash1 HASH("ItemGasFilterNitrogen") filterFound
 beg slotHash1 HASH("ItemGasFilterNitrogenM") filterFound
