@@ -1,0 +1,51 @@
+alias dSensor d0
+alias dHeater d1
+alias dCooler d2
+
+alias rTemp r15
+alias rPres r14
+alias rHalf r13
+alias rCooler r12
+alias rHeater r11
+
+define MINTEMP 20
+define MAXTEMP 30
+
+define MINPRES 70
+define MAXPRES 90
+
+# Calculate halfway temperature: (MINTEMP + MAXTEMP) / 2
+add rHalf MINTEMP MAXTEMP
+div rHalf rHalf 2
+
+start:
+    yield
+
+    # Read sensor data
+    l rTemp dSensor Temperature
+    l rPres dSensor Pressure
+
+    # Convert temperature from Kelvin to Celsius
+    sub rTemp rTemp 273.15
+
+    # Read current states of cooler and heater
+    l rCooler dCooler On
+    l rHeater dHeater On
+
+    # Cooler logic:
+    # Turn on if temp >= MAXTEMP, turn off if temp <= rHalf
+    sge r0 rTemp MAXTEMP
+    sgt r1 rTemp rHalf
+    or rCooler rCooler r0
+    and rCooler rCooler r1
+    s dCooler On rCooler
+
+    # Heater logic:
+    # Turn on if temp <= MINTEMP, turn off if temp >= rHalf
+    sle r0 rTemp MINTEMP
+    slt r1 rTemp rHalf
+    or rHeater rHeater r0
+    and rHeater rHeater r1
+    s dHeater On rHeater
+
+j start
