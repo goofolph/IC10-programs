@@ -1,0 +1,11 @@
+define VENDING HASH("StructureVendingMachine")
+
+sb VENDING On 1
+
+main:
+  get r0 db 0
+  s db Setting r0
+
+end:
+  yield
+  j main

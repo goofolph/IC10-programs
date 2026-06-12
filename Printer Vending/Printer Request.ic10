@@ -1,0 +1,59 @@
+alias dPrinter d0
+alias dSorter d1
+
+define HOUSING HASH("ItemKitLogicCircuit")
+define VENDINGHOUSING HASH("Vending IC Housing")
+
+main:
+  move r0 HASH("Copper")
+  jal checkReagent
+  move r0 HASH("Gold")
+  jal checkReagent
+  move r0 HASH("Iron")
+  jal checkReagent
+  move r0 HASH("Lead")
+  jal checkReagent
+  move r0 HASH("Nickel")
+  jal checkReagent
+  move r0 HASH("Silicon")
+  jal checkReagent
+  move r0 HASH("Silver")
+  jal checkReagent
+  move r0 HASH("Hydrocarbon")
+  jal checkReagent
+  move r0 HASH("Constantan")
+  jal checkReagent
+  move r0 HASH("Electrum")
+  jal checkReagent
+  move r0 HASH("Invar")
+  jal checkReagent
+  move r0 HASH("Solder")
+  jal checkReagent
+  move r0 HASH("Steel")
+  jal checkReagent
+  move r0 HASH("Astroloy")
+  jal checkReagent
+  move r0 HASH("Hastelloy")
+  jal checkReagent
+  move r0 HASH("Inconel")
+  jal checkReagent
+  move r0 HASH("Stellite")
+  jal checkReagent
+  move r0 HASH("Waspaloy")
+  jal checkReagent
+
+end:
+  yield
+  j main
+
+checkReagent:
+  # r0 is Reagent hash
+  # will send request to vending
+  lr r1 dPrinter Required r0
+  rmap r0 dPrinter r0 # convert Iron to ItemIronIngot
+  beqz r1 ra
+  yield
+  s db Setting r0
+  # found reagent to request
+  # search current stack to check for duplicates
+  j ra

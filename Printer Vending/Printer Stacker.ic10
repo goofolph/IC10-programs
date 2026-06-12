@@ -1,0 +1,11 @@
+alias dPrinter d0
+alias dStacker d1
+
+s dPrinter On 1
+s dStacker On 1
+
+main:
+
+end:
+  yield
+  j main
