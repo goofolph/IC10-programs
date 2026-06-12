@@ -1,6 +1,7 @@
 define VENDING HASH("StructureVendingMachine")
 
 sb VENDING On 1
+put db 0 0
 
 main:
   get r0 db 0
