@@ -10,39 +10,39 @@ main:
   get r0 db 0
   s db Setting r0
     
-    # check each pair in stack for requests. start at 8/9 and end at 510/511
-    # if request can be sent do so
-    #   if not enough to completely satisfy
-    #     set stacker to size of vended items
-    #     wait mutex
-    #     clear request
-    #     clear mutex
-    #   else
-    #     send the item and set stacker to size of requested amount
-    #     output one stack, then send the remainder to be sent back into vending machine.
-    #     Might want to add another sorter to send the remainder directely back into the vending machine.
-    #     wait mutex
-    #     clear request
-    #     clear mutex
-    # else
-    #   wait mutex
-    #   clear the request.
-    #   clear mutex
+  # check each pair in stack for requests. start at 8/9 and end at 510/511
+  # if request can be sent do so
+  #   if not enough to completely satisfy
+  #     set stacker to size of vended items
+  #     wait mutex
+  #     clear request
+  #     clear mutex
+  #   else
+  #     send the item and set stacker to size of requested amount
+  #     output one stack, then send the remainder to be sent back into vending machine.
+  #     Might want to add another sorter to send the remainder directely back into the vending machine.
+  #     wait mutex
+  #     clear request
+  #     clear mutex
+  # else
+  #   wait mutex
+  #   clear the request.
+  #   clear mutex
 
 end:
   yield
   j main
 
 waitMutex:
-    yield # 1 (prevent next steps from forced yield)
-    get r2 rVendingHousingId 0 # 2 check mutex, if not zero goto 1
-    bnez r2 waitMutex # 2 
-    put rVendingHousingId 0 rSelfId # 3 write own ref id to mutex
-    yield # 4 yield to check for race conditions
-    get r2 rVendingHousingId 0 # 5 if mutex not = own ref id goto 1
-    bne r2 rSelfId waitMutex # 5
-    # 6 do work outside function
-    j ra
+  yield # 1 (prevent next steps from forced yield)
+  get r2 rSelfId 0 # 2 check mutex, if not zero goto 1
+  bnez r2 waitMutex # 2 
+  put rSelfId 0 rSelfId # 3 write own ref id to mutex
+  yield # 4 yield to check for race conditions
+  get r2 rSelfId 0 # 5 if mutex not = own ref id goto 1
+  bne r2 rSelfId waitMutex # 5
+  # 6 do work outside function
+  j ra
 
 clearMutex:
   put rSelfId 0 0 # 7 set mutex to 0 to release

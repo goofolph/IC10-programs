@@ -63,16 +63,28 @@ checkReagent:
   s db Setting r0
   # found reagent to request
   # search current stack to check for duplicates
-  wait:
-    yield # 1 (prevent next steps from forced yield)
-    get r2 rVendingHousingId 0 # 2 check mutex, if not zero goto 1
-    bnez r2 wait # 2 
-    put rVendingHousingId 0 rSelfId # 3 write own ref id to mutex
-    yield # 4 yield to check for race conditions
-    get r2 rVendingHousingId 0 # 5 if mutex not = own ref id goto 1
-    bne r2 rSelfId wait # 5
+  push ra
+  jal waitMutex
+  pop ra
 
   # 6 do work
 
-  put rVendingHousingId 0 0 # 7 set mutex to 0 to release
+  push ra
+  jal clearMutex
+  pop ra
+  j ra
+
+waitMutex:
+  yield # 1 (prevent next steps from forced yield)
+  get r2 rVendingHousingId 0 # 2 check mutex, if not zero goto 1
+  bnez r2 waitMutex # 2 
+  put rVendingHousingId 0 rSelfId # 3 write own ref id to mutex
+  yield # 4 yield to check for race conditions
+  get r2 rVendingHousingId 0 # 5 if mutex not = own ref id goto 1
+  bne r2 rSelfId waitMutex # 5
+  # 6 do work outside function
+  j ra
+
+clearMutex:
+  put rSelfId 0 0 # 7 set mutex to 0 to release
   j ra
