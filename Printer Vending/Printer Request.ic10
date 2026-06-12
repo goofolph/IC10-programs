@@ -1,8 +1,10 @@
 alias dPrinter d0
 alias dSorter d1
 
+alias rSelfId r15
+l rSelfId db ReferenceId
 # get and save reference ID for Vending Housing for stack access
-alias rVendingHousingId r15
+alias rVendingHousingId r14
 define HOUSING HASH("StructureCircuitHousing")
 define VENDING HASH("Vending IC Housing")
 lbn rVendingHousingId HOUSING VENDING ReferenceId Average
@@ -59,4 +61,21 @@ checkReagent:
   s db Setting r0
   # found reagent to request
   # search current stack to check for duplicates
+  wait:
+    # 1. Yield (prevent next steps from forced yield)
+    # 2. check mutex, if not zero goto 1
+    # 3. write own ref id to mutex
+    # 4. yield to check for race conditions
+    # 5. if mutex not = own ref id goto 1
+    # 6. do work
+    # 7. set mutex to 0
+    yield # 1
+    get r2 rVendingHousingId 0 # 2
+    bnez r2 wait # 2 
+    put rVendingHousingId 0 rSelfId # 3
+    yield # 4
+    get r2 rVendingHousingId 0 # 5
+    bne r2 rSelfId wait # 5
+
+  put rVendingHousingId 0 0 # 7
   j ra
