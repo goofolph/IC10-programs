@@ -1,8 +1,11 @@
 alias dPrinter d0
 alias dSorter d1
 
-define HOUSING HASH("ItemKitLogicCircuit")
-define VENDINGHOUSING HASH("Vending IC Housing")
+# get and save reference ID for Vending Housing for stack access
+alias rVendingHousingId r15
+define HOUSING HASH("StructureCircuitHousing")
+define VENDING HASH("Vending IC Housing")
+lbn rVendingHousingId HOUSING VENDING ReferenceId Average
 
 main:
   move r0 HASH("Copper")
