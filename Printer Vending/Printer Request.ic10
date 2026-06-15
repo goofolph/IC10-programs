@@ -105,5 +105,5 @@ waitMutex:
   j ra
 
 clearMutex:
-  put rSelfId MUTEX 0
+  put rVendingHousingId MUTEX 0
   j ra
