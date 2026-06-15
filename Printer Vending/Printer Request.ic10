@@ -76,7 +76,7 @@ checkReagent:
   lr r1 dPrinter Contents rReagent
   mul r0 r0 10
   sub rQty r0 r1
-  max rQty rQty 50
+  min rQty rQty 50
   rmap rHash dPrinter rReagent # convert Iron to ItemIronIngot
   blez rQty ra
   s db Setting rHash
