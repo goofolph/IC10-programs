@@ -61,6 +61,13 @@ end:
   j main
 
 checkReagent:
+  openLoop:
+    l r0 dPrinter Open
+    beqz r0 endOpenLoop
+    yield
+    j openLoop
+  endOpenLoop:
+
   ls r0 dSorter 0 OccupantHash
   select r0 r0 SORTERBYPASS -1
   s dSorter Output r0
