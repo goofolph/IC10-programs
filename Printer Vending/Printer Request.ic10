@@ -1,0 +1,123 @@
+alias dPrinter d0
+alias dSorter d1
+define MUTEX 0
+define PUBLICSP 1
+define TIMEOUT 60
+define SORTERBYPASS 0
+define SORTERGRAB 1
+alias rSelfId r15
+l rSelfId db ReferenceId
+alias rVendingHousingId r14
+define HOUSING HASH("StructureCircuitHousing")
+define VENDING HASH("Vending IC Housing")
+lbn rVendingHousingId HOUSING VENDING ReferenceId Average
+alias rReagent r13
+alias rHash r12
+alias rQty r11
+s dSorter On 1
+s dSorter Mode 2
+
+main:
+  move rReagent HASH("Copper")
+  jal checkReagent
+  move rReagent HASH("Gold")
+  jal checkReagent
+  move rReagent HASH("Iron")
+  jal checkReagent
+  move rReagent HASH("Lead")
+  jal checkReagent
+  move rReagent HASH("Nickel")
+  jal checkReagent
+  move rReagent HASH("Silicon")
+  jal checkReagent
+  move rReagent HASH("Silver")
+  jal checkReagent
+  move rReagent HASH("Hydrocarbon")
+  jal checkReagent
+  move rReagent HASH("Constantan")
+  jal checkReagent
+  move rReagent HASH("Electrum")
+  jal checkReagent
+  move rReagent HASH("Invar")
+  jal checkReagent
+  move rReagent HASH("Solder")
+  jal checkReagent
+  move rReagent HASH("Steel")
+  jal checkReagent
+  move rReagent HASH("Astroloy")
+  jal checkReagent
+  move rReagent HASH("Hastelloy")
+  jal checkReagent
+  move rReagent HASH("Inconel")
+  jal checkReagent
+  move rReagent HASH("Stellite")
+  jal checkReagent
+  move rReagent HASH("Waspaloy")
+  jal checkReagent
+
+end:
+  yield
+  s db Setting 0
+  j main
+
+checkReagent:
+  openLoop:
+    l r0 dPrinter Open
+    beqz r0 endOpenLoop
+    yield
+    j openLoop
+  endOpenLoop:
+
+  ls r0 dSorter 0 OccupantHash
+  select r0 r0 SORTERBYPASS -1
+  s dSorter Output r0
+
+  lr r0 dPrinter Recipe rReagent
+  lr r1 dPrinter Contents rReagent
+  mul r0 r0 10
+  sub rQty r0 r1
+  min rQty rQty 50
+  rmap rHash dPrinter rReagent # convert Iron to ItemIronIngot
+  blez rQty ra
+  s db Setting rHash
+  push ra
+  jal waitMutex
+  get r2 rVendingHousingId PUBLICSP
+  put rVendingHousingId r2 rHash
+  add r2 r2 1
+  put rVendingHousingId r2 rQty
+  add r2 r2 1
+  put rVendingHousingId PUBLICSP r2
+  jal clearMutex
+
+  move r3 TIMEOUT
+  waitLoop:
+    yield
+    blez r3 endWaitLoop
+    sub r3 r3 1
+    ls r0 dSorter 0 OccupantHash
+    beqz r0 waitLoop
+    beq r0 rHash waitLoopWanted
+      s dSorter Output SORTERBYPASS
+      j waitLoop
+    waitLoopWanted:
+      s dSorter Output SORTERGRAB
+      yield
+      yield
+  endWaitLoop:
+
+  pop ra
+  j ra
+
+waitMutex:
+  yield
+  get r2 rVendingHousingId MUTEX
+  bnez r2 waitMutex
+  put rVendingHousingId MUTEX rSelfId
+  yield
+  get r2 rVendingHousingId MUTEX
+  bne r2 rSelfId waitMutex
+
+clearMutex:
+  put rVendingHousingId MUTEX 0
+  j ra

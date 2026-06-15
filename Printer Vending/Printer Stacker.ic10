@@ -1,0 +1,39 @@
+alias dPrinter d0
+alias dStacker d1
+
+alias rCounter r10
+
+main:
+  l r0 dPrinter On
+  s dStacker On r0
+  beqz r0 end
+
+  l r0 dPrinter Open
+  beqz r0 notOpen
+    l r1 dStacker Setting
+    s dStacker Setting 500
+    openLoop:
+      yield
+      l r0 dPrinter Open
+      bnez r0 openLoop
+    endOpenLoop:
+    s dStacker Setting r1
+  notOpen:
+
+  l r0 dPrinter Activate
+
+  bnez r0 printerActive
+    l rCounter dStacker Setting
+    s dPrinter ClearMemory 1
+    j end
+
+  printerActive:
+    l r0 dPrinter ExportCount
+    s db Setting r0
+    slt r0 r0 rCounter
+    s dPrinter Activate r0
+
+
+end:
+  yield
+  j main

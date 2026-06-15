@@ -1,0 +1,56 @@
+define VENDING HASH("StructureVendingMachine")
+define VENDINGNAME HASH("Printer Vending Machine")
+
+define STACKER HASH("StructureStacker")
+define STACKERREVERSED HASH("StructureStackerReverse")
+
+define MUTEX 0
+define PUBLICSP 1
+
+alias rSelfId r15
+alias rHash r14
+alias rQty r13
+
+l rSelfId db ReferenceId
+
+sbn VENDING VENDINGNAME On 1
+sbn VENDING VENDINGNAME Lock 0
+put db MUTEX 0
+
+# TODO alias or connect the input and output stackers.
+# TODO put the stackers into logic mode.
+
+main:
+
+  # TODO add check for pending Stacker on input and output.
+
+  get sp db PUBLICSP
+  blt sp 10 end # >= 10 when at least one request pending
+
+  jal waitMutex
+  pop rQty
+  pop rHash
+  s db Setting rHash
+  put db PUBLICSP sp
+  jal clearMutex
+  # TODO add quantity support with the output stacker.
+  sbn VENDING VENDINGNAME RequestHash rHash
+
+end:
+  s db Setting 0
+  yield
+  j main
+
+waitMutex:
+  yield
+  get r2 db MUTEX
+  bnez r2 waitMutex
+  put db MUTEX rSelfId
+  yield
+  get r2 db MUTEX
+  bne r2 rSelfId waitMutex
+  j ra
+
+clearMutex:
+  put db MUTEX 0
+  j ra
