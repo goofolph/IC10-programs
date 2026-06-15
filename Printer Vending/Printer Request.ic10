@@ -16,6 +16,7 @@ alias rReagent r13
 alias rHash r12
 alias rQty r11
 s dDisplayQty On 1
+s dSorter On 1
 s dSorter Mode 2
 
 main:
@@ -64,8 +65,8 @@ end:
 
 checkReagent:
   ls r0 dSorter 0 OccupantHash
-  brnez r0 2
-  s dSorter Output SORTERBYPASS
+  select r0 r0 SORTERBYPASS -1
+  s dSorter Output r0
 
   lr rQty dPrinter Required rReagent
   rmap rHash dPrinter rReagent # convert Iron to ItemIronIngot
