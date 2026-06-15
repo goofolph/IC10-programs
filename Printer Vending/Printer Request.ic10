@@ -85,6 +85,8 @@ checkReagent:
   move r3 TIMEOUT
   waitLoop:
     yield
+    blez r3 endWaitLoop
+    sub r3 r3 1
     ls r0 dSorter 0 OccupantHash
     beqz r0 waitLoop
     beq r0 rHash waitLoopWanted
