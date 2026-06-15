@@ -7,6 +7,9 @@ define STACKERREVERSED HASH("StructureStackerReverse")
 define MUTEX 0
 define PUBLICSP 1
 
+define DISPLAY HASH("StructureConsoleLED5")
+define DISPLAYQTY HASH("Vending Display Qty")
+
 alias rSelfId r15
 alias rHash r14
 alias rQty r13
@@ -14,6 +17,8 @@ alias rQty r13
 l rSelfId db ReferenceId
 
 sbn VENDING VENDINGNAME On 1
+sbn VENDING VENDINGNAME Lock 0
+sbn DISPLAY DISPLAYQTY On 1
 put db MUTEX 0
 
 # TODO alias or connect the input and output stackers.
@@ -30,6 +35,8 @@ main:
   jal waitMutex
   pop rQty
   pop rHash
+  s db Setting rHash
+  sbn DISPLAY DISPLAYQTY Setting rQty
   put db PUBLICSP sp
   jal clearMutex
   # TODO add quantity support with the output stacker.
