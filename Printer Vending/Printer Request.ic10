@@ -92,6 +92,8 @@ checkReagent:
       j waitLoop
     waitLoopWanted:
       s dSorter Output SORTERGRAB
+      yield
+      yield
   endWaitLoop:
 
   pop ra
