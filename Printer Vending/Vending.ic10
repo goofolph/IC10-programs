@@ -30,7 +30,7 @@ main:
   # TODO for debugging show the hash and qty of last request on displays
 
   get sp db PUBLICSP
-  blt sp 10 end # will be 8 when empty, 9 when partially filled, >= 10 when at least one request pending.
+  blt sp 10 end # >= 10 when at least one request pending
 
   jal waitMutex
   pop rQty
@@ -43,6 +43,8 @@ main:
   sbn VENDING VENDINGNAME RequestHash rHash
 
 end:
+  s db Setting 0
+  sbn DISPLAY DISPLAYQTY Setting 0
   yield
   j main
 
