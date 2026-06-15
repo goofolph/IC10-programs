@@ -7,10 +7,6 @@ define STACKERREVERSED HASH("StructureStackerReverse")
 define MUTEX 0
 define PUBLICSP 1
 
-define DISPLAY HASH("StructureConsoleLED5")
-define DISPLAYQTY HASH("Vending Display Qty")
-define DISPLAYSP HASH("Vending Display SP")
-
 alias rSelfId r15
 alias rHash r14
 alias rQty r13
@@ -19,7 +15,6 @@ l rSelfId db ReferenceId
 
 sbn VENDING VENDINGNAME On 1
 sbn VENDING VENDINGNAME Lock 0
-sbn DISPLAY DISPLAYQTY On 1
 put db MUTEX 0
 
 # TODO alias or connect the input and output stackers.
@@ -28,27 +23,21 @@ put db MUTEX 0
 main:
 
   # TODO add check for pending Stacker on input and output.
-  # TODO for debugging show the hash and qty of last request on displays
 
   get sp db PUBLICSP
-  sbn DISPLAY DISPLAYSP Setting sp
   blt sp 10 end # >= 10 when at least one request pending
 
   jal waitMutex
   pop rQty
   pop rHash
   s db Setting rHash
-  sbn DISPLAY DISPLAYQTY Setting rQty
   put db PUBLICSP sp
-  yield
-  yield
   jal clearMutex
   # TODO add quantity support with the output stacker.
   sbn VENDING VENDINGNAME RequestHash rHash
 
 end:
   s db Setting 0
-  sbn DISPLAY DISPLAYQTY Setting 0
   yield
   j main
 

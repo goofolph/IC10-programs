@@ -1,6 +1,5 @@
 alias dPrinter d0
 alias dSorter d1
-alias dDisplayQty d2
 define MUTEX 0
 define PUBLICSP 1
 define TIMEOUT 60
@@ -15,7 +14,6 @@ lbn rVendingHousingId HOUSING VENDING ReferenceId Average
 alias rReagent r13
 alias rHash r12
 alias rQty r11
-s dDisplayQty On 1
 s dSorter On 1
 s dSorter Mode 2
 
@@ -60,7 +58,6 @@ main:
 end:
   yield
   s db Setting 0
-  s dDisplayQty Setting 0
   j main
 
 checkReagent:
@@ -72,7 +69,6 @@ checkReagent:
   rmap rHash dPrinter rReagent # convert Iron to ItemIronIngot
   beqz rQty ra
   s db Setting rHash
-  s dDisplayQty Setting rQty
   push ra
   jal waitMutex
   get r2 rVendingHousingId PUBLICSP
