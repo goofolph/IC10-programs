@@ -1,0 +1,53 @@
+alias dFilter db
+alias dVent d0
+alias dStorage d1
+
+alias rTarget r15
+
+define GASMAX 9000
+define SMARTMAX 18000
+define PIPEMAX 40000
+
+define GASCANISTER 42280099
+define SMARTCANISTER -668314371
+
+s dFilter Mode 0
+s dVent On 0
+
+main:
+  yield
+  ls r0 dStorage 0 PrefabHash
+  beq r0 GASCANISTER gas# Gas Canister
+  beq r0 SMARTCANISTER smart   # Smart Gas Canister
+  move rTarget 0
+  j start
+gas:
+  move rTarget GASMAX
+  j start
+smart:
+  move rTarget SMARTMAX
+  j start
+start:
+  yield
+  l r0 dFilter PressureOutput
+  bge r0 rTarget empty
+  beq rTarget 0 empty
+  s dVent Mode 1
+  s dVent PressureInternal PIPEMAX
+  s dVent On 1
+  s dFilter Mode 1
+  j start
+
+empty:
+  s dFilter Mode 0
+  l r0 dFilter PressureInput
+  beqz r0 empty_done
+  s dVent Mode 0
+  s dVent On 1
+empty_loop:
+  yield
+  l r0 dFilter PressureInput
+  bgtz r0 empty_loop
+empty_done:
+  s dVent On 0
+  j main
