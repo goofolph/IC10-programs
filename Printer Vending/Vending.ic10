@@ -9,6 +9,7 @@ define PUBLICSP 1
 
 define DISPLAY HASH("StructureConsoleLED5")
 define DISPLAYQTY HASH("Vending Display Qty")
+define DISPLAYSP HASH("Vending Display SP")
 
 alias rSelfId r15
 alias rHash r14
@@ -30,6 +31,7 @@ main:
   # TODO for debugging show the hash and qty of last request on displays
 
   get sp db PUBLICSP
+  sbn DISPLAY DISPLAYSP Setting sp
   blt sp 10 end # >= 10 when at least one request pending
 
   jal waitMutex
@@ -38,6 +40,8 @@ main:
   s db Setting rHash
   sbn DISPLAY DISPLAYQTY Setting rQty
   put db PUBLICSP sp
+  yield
+  yield
   jal clearMutex
   # TODO add quantity support with the output stacker.
   sbn VENDING VENDINGNAME RequestHash rHash
