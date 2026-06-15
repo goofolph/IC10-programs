@@ -31,7 +31,7 @@ Setup:
 
 Might have fixed values for inside and outside pressure, or sensors to read to auto equalize from tanks.
 
-## [Airlock Auto](Airlock Auto.md)
+## [Airlock Auto](<Airlock Auto.md>)
 
 ## Pressureize Room
 
