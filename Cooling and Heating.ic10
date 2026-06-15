@@ -1,0 +1,42 @@
+define GASSENSOR HASH("StructureGasSensor")
+define HEATER HASH("StructureWallHeater")
+define COOLERLIQUID HASH("StructureWaterWallCooler")
+define COOLER HASH("StructureWallCooler")
+
+define MINTEMP 293.15
+define MAXTEMP 303.15
+
+alias rHeater r15
+alias rCooler r14
+alias rTemp r13
+alias rTarget r12
+
+add rTarget MINTEMP MAXTEMP
+div rTarget rTarget 2
+
+main:
+
+  # HEATER && < rTarget || < MINTEMP
+  lb rTemp GASSENSOR Temperature Maximum
+  lb r1 HEATER On Average
+  slt r2 rTemp rTarget
+  sle r3 rTemp MINTEMP
+  and r0 r1 r2
+  or rHeater r0 r3
+
+
+  # COOLER && > rTarget || > MAXTEMP
+  lb r1 COOLER On Average
+  lb r2 COOLERLIQUID On Maximum
+  or r1 r1 r2
+  sgt r2 rTemp rTarget
+  sge r3 rTemp MAXTEMP
+  and r0 r1 r2
+  or rCooler r0 r3
+
+end:
+  sb HEATER On rHeater
+  sb COOLER On rCooler
+  sb COOLERLIQUID On rCooler
+  yield
+  j main
