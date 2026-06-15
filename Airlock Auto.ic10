@@ -1,0 +1,13 @@
+define D_SENSOR HASH("StructureGasSensor")
+define D_DOOR HASH("StructureCompositeDoor")
+define D_VENT HASH("StructureActiveVent")
+define D_OCCUPANCY_SENSOR HASH("StructureOccupancySensor")
+
+define N_SENSOR_AIRLOCK HASH("Airlock Sensor")
+define N_SENSOR_EXT HASH("Airlock Sensor External")
+define N_SENSOR_INT HASH("Airlock Sensor Internal")
+define N_DOOR_INT HASH("Airlock Door Internal")
+define N_DOOR_EXT HASH("Airlock Door External")
+define N_VENT_INT HASH("Airlock Vent Internal")
+define N_VENT_EXT HASH("Airlock Vent External")
+define N_OCCUPANCY_SENSOR HASH("Station Occupancy Sensor")
