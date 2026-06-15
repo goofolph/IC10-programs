@@ -1,6 +1,11 @@
 alias dPrinter d0
 alias dSorter d1
 
+define MUTEX 0
+define PUBLICSP 1
+
+define TIMEOUT 60
+
 alias rSelfId r15
 l rSelfId db ReferenceId
 # get and save reference ID for Vending Housing for stack access
@@ -9,44 +14,46 @@ define HOUSING HASH("StructureCircuitHousing")
 define VENDING HASH("Vending IC Housing")
 lbn rVendingHousingId HOUSING VENDING ReferenceId Average
 
-alias rIndex r13
+alias rReagent r13
+alias rHash r12
+alias rQty r11
 
 main:
-  move r0 HASH("Copper")
+  move rReagent HASH("Copper")
   jal checkReagent
-  move r0 HASH("Gold")
+  move rReagent HASH("Gold")
   jal checkReagent
-  move r0 HASH("Iron")
+  move rReagent HASH("Iron")
   jal checkReagent
-  move r0 HASH("Lead")
+  move rReagent HASH("Lead")
   jal checkReagent
-  move r0 HASH("Nickel")
+  move rReagent HASH("Nickel")
   jal checkReagent
-  move r0 HASH("Silicon")
+  move rReagent HASH("Silicon")
   jal checkReagent
-  move r0 HASH("Silver")
+  move rReagent HASH("Silver")
   jal checkReagent
-  move r0 HASH("Hydrocarbon")
+  move rReagent HASH("Hydrocarbon")
   jal checkReagent
-  move r0 HASH("Constantan")
+  move rReagent HASH("Constantan")
   jal checkReagent
-  move r0 HASH("Electrum")
+  move rReagent HASH("Electrum")
   jal checkReagent
-  move r0 HASH("Invar")
+  move rReagent HASH("Invar")
   jal checkReagent
-  move r0 HASH("Solder")
+  move rReagent HASH("Solder")
   jal checkReagent
-  move r0 HASH("Steel")
+  move rReagent HASH("Steel")
   jal checkReagent
-  move r0 HASH("Astroloy")
+  move rReagent HASH("Astroloy")
   jal checkReagent
-  move r0 HASH("Hastelloy")
+  move rReagent HASH("Hastelloy")
   jal checkReagent
-  move r0 HASH("Inconel")
+  move rReagent HASH("Inconel")
   jal checkReagent
-  move r0 HASH("Stellite")
+  move rReagent HASH("Stellite")
   jal checkReagent
-  move r0 HASH("Waspaloy")
+  move rReagent HASH("Waspaloy")
   jal checkReagent
 
 end:
@@ -54,37 +61,49 @@ end:
   j main
 
 checkReagent:
-  # r0 is Reagent hash
   # will send request to vending
-  lr r1 dPrinter Required r0
-  rmap r0 dPrinter r0 # convert Iron to ItemIronIngot
-  beqz r1 ra
-  yield
-  s db Setting r0
+  lr rQty dPrinter Required rReagent
+  rmap rHash dPrinter rReagent # convert Iron to ItemIronIngot
+  beqz rQty ra
   # found reagent to request
-  # search current stack to check for duplicates
+  # TODO for debugging show the hash and qty of current reagent, item, and quantity on displays
   push ra
   jal waitMutex
-  pop ra
 
-  # 6 do work
-
-  push ra
+  # r2 is the current public sp in vending
+  get r2 rVendingHousingId PUBLICSP
+  put rVendingHousingId r2 rHash
+  add r2 r2 1
+  put rVendingHousingId r2 rQty
+  add r2 r2 1
+  put rVendingHousingId PUBLICSP r2
   jal clearMutex
+
+  # wait with timeout for resources to arrive. Once timeout is done, move on. If qty of rea
+  # r3 is the current check during timeout wait
+  # r4 is the current required qty
+  move r3 TIMEOUT
+  waitLoop:
+    yield
+    lr r4 dPrinter Required rReagent
+    bne r4 rQty endWaitLoop
+    sub r3 r3 1
+    bgtz r3 waitLoop
+  endWaitLoop:
+
   pop ra
   j ra
 
 waitMutex:
-  yield # 1 (prevent next steps from forced yield)
-  get r2 rVendingHousingId 0 # 2 check mutex, if not zero goto 1
-  bnez r2 waitMutex # 2 
-  put rVendingHousingId 0 rSelfId # 3 write own ref id to mutex
-  yield # 4 yield to check for race conditions
-  get r2 rVendingHousingId 0 # 5 if mutex not = own ref id goto 1
-  bne r2 rSelfId waitMutex # 5
-  # 6 do work outside function
+  yield
+  get r2 rVendingHousingId MUTEX
+  bnez r2 waitMutex
+  put rVendingHousingId MUTEX rSelfId
+  yield
+  get r2 rVendingHousingId MUTEX
+  bne r2 rSelfId waitMutex
   j ra
 
 clearMutex:
-  put rSelfId 0 0 # 7 set mutex to 0 to release
+  put rSelfId MUTEX 0
   j ra

@@ -11,7 +11,7 @@ Each printer will have two ICs, one to manage printing count using the stacker f
 | Index | Purpose   | Type  |
 | ----- | --------- | ----- |
 | 0     | Mutex     | Bool  |
-| 1     |           |       |
+| 1     | Public SP | Int   |
 | 2     |           |       |
 | 3     |           |       |
 | 4     |           |       |
@@ -26,6 +26,8 @@ Each printer will have two ICs, one to manage printing count using the stacker f
 sp 0 will be a mutex of sorts, while this is true no other ICs can add/remove to the stack, this is to prevent race conditions of printers adding while the vending machine removes or two printers adding at the same time. This will be set during changes by both the vending machine and printers.
 
 Each reagent will have it's hash and quantity sent as a pair. this will start at sp 8 leaving 0-7 for the mutex and other variables/settings.
+
+I can't edit `sp` from other programs I assigned `sp 0` as the 'public' sp, each time a printer adds to the vender's stack it increments the public sp and the vending machine will copy to/from it when popping.
 
 ## Printer Setup
 
