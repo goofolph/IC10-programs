@@ -9,7 +9,7 @@ main:
   beqz r0 end
 
   l r0 dPrinter Open
-  bnez r0 notOpen
+  beqz r0 notOpen
     l r1 dStacker Setting
     s dStacker Setting 500
     openLoop:
