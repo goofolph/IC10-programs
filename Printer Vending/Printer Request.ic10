@@ -1,24 +1,20 @@
 alias dPrinter d0
 alias dSorter d1
 alias dDisplayQty d2
-
 define MUTEX 0
 define PUBLICSP 1
-
-define TIMEOUT 5
-
+define TIMEOUT 60
+define SORTERBYPASS 0
+define SORTERGRAB 1
 alias rSelfId r15
 l rSelfId db ReferenceId
-# get and save reference ID for Vending Housing for stack access
 alias rVendingHousingId r14
 define HOUSING HASH("StructureCircuitHousing")
 define VENDING HASH("Vending IC Housing")
 lbn rVendingHousingId HOUSING VENDING ReferenceId Average
-
 alias rReagent r13
 alias rHash r12
 alias rQty r11
-
 s dDisplayQty On 1
 s dSorter Mode 2
 
@@ -67,22 +63,17 @@ end:
   j main
 
 checkReagent:
-  s dSorter Output 0
-  # will send request to vending
+  ls r0 dSorter 0 OccupantHash
+  brnez r0 2
+  s dSorter Output SORTERBYPASS
+
   lr rQty dPrinter Required rReagent
   rmap rHash dPrinter rReagent # convert Iron to ItemIronIngot
-
   beqz rQty ra
-
-  # found reagent to request
-  # TODO for debugging show the hash and qty of current reagent, item, and quantity on dis
   s db Setting rHash
   s dDisplayQty Setting rQty
-
   push ra
   jal waitMutex
-
-  # r2 is the current public sp in vending
   get r2 rVendingHousingId PUBLICSP
   put rVendingHousingId r2 rHash
   add r2 r2 1
@@ -91,16 +82,16 @@ checkReagent:
   put rVendingHousingId PUBLICSP r2
   jal clearMutex
 
-  # wait with timeout for resources to arrive. Once timeout is done, move on. If qty of re
-  # r3 is the current check during timeout wait
-  # r4 is the current required qty
   move r3 TIMEOUT
   waitLoop:
     yield
-    lr r4 dPrinter Required rReagent
-    bne r4 rQty endWaitLoop
-    sub r3 r3 1
-    bgtz r3 waitLoop
+    ls r0 dSorter 0 OccupantHash
+    beqz r0 waitLoop
+    beq r0 rHash waitLoopWanted
+      s dSorter Output SORTERBYPASS
+      j waitLoop
+    waitLoopWanted:
+      s dSorter Output SORTERGRAB
   endWaitLoop:
 
   pop ra
@@ -114,7 +105,6 @@ waitMutex:
   yield
   get r2 rVendingHousingId MUTEX
   bne r2 rSelfId waitMutex
-  j ra
 
 clearMutex:
   put rVendingHousingId MUTEX 0
