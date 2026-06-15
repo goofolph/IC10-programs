@@ -72,9 +72,13 @@ checkReagent:
   select r0 r0 SORTERBYPASS -1
   s dSorter Output r0
 
-  lr rQty dPrinter Required rReagent
+  lr r0 dPrinter Recipe rReagent
+  lr r1 dPrinter Contents rReagent
+  mul r0 r0 10
+  sub rQty r0 r1
+  max rQty rQty 50
   rmap rHash dPrinter rReagent # convert Iron to ItemIronIngot
-  beqz rQty ra
+  blez rQty ra
   s db Setting rHash
   push ra
   jal waitMutex
