@@ -11,3 +11,11 @@ define N_DOOR_EXT HASH("Airlock Door External")
 define N_VENT_INT HASH("Airlock Vent Internal")
 define N_VENT_EXT HASH("Airlock Vent External")
 define N_OCCUPANCY_SENSOR HASH("Station Occupancy Sensor")
+
+main:
+
+
+end:
+
+  yield
+  j main
