@@ -9,89 +9,58 @@
 define HOFFSET 180
 define VOFFSET 90
 
-# names heavy + heavy dual
-define SHDNORTH HASH("Solar Panel (Heavy Dual) North")
-define SHNORTH HASH("Solar Panel (Heavy) North")
-define SHDEAST HASH("Solar Panel (Heavy Dual) East")
-define SHEAST HASH("Solar Panel (Heavy) East")
-define SHDSOUTH HASH("Solar Panel (Heavy Dual) South")
-define SHSOUTH HASH("Solar Panel (Heavy) South")
-define SHDWEST HASH("Solar Panel (Heavy Dual) West")
-define SHWEST HASH("Solar Panel (Heavy) West")
-
-# names solar + dual
-define SDNORTH HASH("Solar Panel (Dual) North")
-define SNORTH HASH("Solar Panel North")
-define SDEAST HASH("Solar Panel (Dual) East")
-define SEAST HASH("Solar Panel East")
-define SDWEST HASH("Solar Panel (Dual) West")
-define SWEST HASH("Solar Panel West")
-define SDSOUTH HASH("Solar Panel (Dual) South")
-define SSOUTH HASH("Solar Panel South")
-
-# names sensor
-define SENSOR HASH("Solar Daylight Sensor")
+# Solar names
+define SOLAR0 HASH("Solar 0")
+define SOLAR90 HASH("Solar 90")
+define SOLAR180 HASH("Solar 180")
+define SOLAR270 HASH("Solar 270")
 
 # device types
-define DSHD HASH("StructureSolarPanelDualReinforced")
-define DSH HASH("StructureSolarPanelReinforced")
-define DSD HASH("StructureSolarPanelDual")
-define DS HASH("StructureSolarPanel")
+define SOLAR HASH("StructureSolarPanel")
+define SOLARDUAL HASH("StructureSolarPanelDual")
+define SOLARREIN HASH("StructureSolarPanelReinforced")
+define SOLARDUALREIN HASH("StructureSolarPanelDualReinforced")
 
 # sensor
 define DSENSOR HASH("StructureDaylightSensor")
+define SENSOR HASH("Solar Daylight Sensor")
 alias horiz r15
 alias vert r14
 
-start:
-lbn horiz DSENSOR SENSOR Horizontal 0
-lbn vert DSENSOR SENSOR Vertical 0
-add vert vert VOFFSET
-add horiz horiz HOFFSET
+main:
+    lbn horiz DSENSOR SENSOR Horizontal 0
+    lbn vert DSENSOR SENSOR Vertical 0
 
-# north
-add r0 horiz 90
-sbn DSHD SHDNORTH Horizontal r0
-sbn DSHD SHDNORTH Vertical vert
-sbn DSH SHNORTH Horizontal r0
-sbn DSH SHNORTH Vertical vert
-sbn DSD SDNORTH Horizontal r0
-sbn DSD SDNORTH Vertical vert
-sbn DS SNORTH Horizontal r0
-sbn DS SNORTH Vertical vert
+    add vert vert VOFFSET
+    add horiz horiz HOFFSET
 
-# east
-add r0 horiz 0
-sbn DSHD SHDEAST Horizontal r0
-sbn DSHD SHDEAST Vertical vert
-sbn DSH SHEAST Horizontal r0
-sbn DSH SHEAST Vertical vert
-sbn DSD SDEAST Horizontal r0
-sbn DSD SDEAST Vertical vert
-sbn DS SEAST Horizontal r0
-sbn DS SEAST Vertical vert
+    move r0 horiz
+    add r1 r0 90
+    add r2 r0 180
+    add r3 r0 270
 
-# south
-add r0 horiz -90
-sbn DSHD SHDSOUTH Horizontal r0
-sbn DSHD SHDSOUTH Vertical vert
-sbn DSH SHSOUTH Horizontal r0
-sbn DSH SHSOUTH Vertical vert
-sbn DSD SDSOUTH Horizontal r0
-sbn DSD SDSOUTH Vertical vert
-sbn DS SSOUTH Horizontal r0
-sbn DS SSOUTH Vertical vert
+end:
+    sb SOLAR Vertical vert
 
-# west
-add r0 horiz -180
-sbn DSHD SHDWEST Horizontal r0
-sbn DSHD SHDWEST Vertical vert
-sbn DSH SHWEST Horizontal r0
-sbn DSH SHWEST Vertical vert
-sbn DSD SDWEST Horizontal r0
-sbn DSD SDWEST Vertical vert
-sbn DS SWEST Horizontal r0
-sbn DS SWEST Vertical vert
+    sbn SOLAR SOLAR0 Horizontal r0
+    sbn SOLARDUAL SOLAR0 Horizontal r0
+    sbn SOLARREIN SOLAR0 Horizontal r0
+    sbn SOLARDUALREIN SOLAR0 Horizontal r0
 
-yield
-j start
+    sbn SOLAR SOLAR90 Horizontal r1
+    sbn SOLARDUAL SOLAR90 Horizontal r1
+    sbn SOLARREIN SOLAR90 Horizontal r1
+    sbn SOLARDUALREIN SOLAR90 Horizontal r1
+
+    sbn SOLAR SOLAR180 Horizontal r2
+    sbn SOLARDUAL SOLAR180 Horizontal r2
+    sbn SOLARREIN SOLAR180 Horizontal r2
+    sbn SOLARDUALREIN SOLAR180 Horizontal r2
+
+    sbn SOLAR SOLAR270 Horizontal r3
+    sbn SOLARDUAL SOLAR270 Horizontal r3
+    sbn SOLARREIN SOLAR270 Horizontal r3
+    sbn SOLARDUALREIN SOLAR270 Horizontal r3
+
+    yield
+    j main
